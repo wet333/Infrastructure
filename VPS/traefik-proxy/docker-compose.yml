@@ -1,0 +1,62 @@
+version: "3.8"
+
+services:
+  traefik:
+    image: traefik:v3.0
+    container_name: traefik
+    restart: always
+    env_file:
+      - .env
+
+    # Ports Traefik listens to
+    ports:
+      - "80:80"   # HTTP
+      - "443:443" # HTTPS
+
+    # Traefik configuration
+    command:
+      # Enable dashboard
+      - "--api.dashboard=true"
+
+      # Docker as provider
+      - "--providers.docker=true"
+      - "--providers.docker.endpoint=unix:///var/run/docker.sock"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.docker.network=traefik-net"
+
+      # EntryPoints configuration
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+
+      # Force HTTP to HTTPS redirection
+      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+
+      # SSL certificate configuration (ACME_EMAIL from .env)
+      - "--certificatesresolvers.le-resolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.le-resolver.acme.email=${ACME_EMAIL}"
+      - "--certificatesresolvers.le-resolver.acme.storage=/letsencrypt/acme.json"
+
+    # Dashboard: exposed on HTTPS with basic auth (no port 8080 exposed)
+    labels:
+      - "traefik.enable=true"
+      # Dashboard router: https://${DASHBOARD_HOST}/dashboard/
+      - "traefik.http.routers.dashboard.rule=Host(`${DASHBOARD_HOST}`)"
+      - "traefik.http.routers.dashboard.entrypoints=websecure"
+      - "traefik.http.routers.dashboard.tls.certresolver=le-resolver"
+      - "traefik.http.routers.dashboard.service=api@internal"
+      - "traefik.http.routers.dashboard.middlewares=dashboard-auth"
+      # Basic auth (DASHBOARD_AUTH_USERS from .env: user:hashedpassword)
+      - "traefik.http.middlewares.dashboard-auth.basicauth.users=${DASHBOARD_AUTH_USERS}"
+
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./letsencrypt:/letsencrypt"
+
+    networks:
+      - traefik-net
+
+# Define the network
+networks:
+  traefik-net:
+    external: true
