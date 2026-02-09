@@ -15,6 +15,8 @@ services:
 
     # Traefik configuration
     command:
+      # Enable debug logging
+      - "--log.level=DEBUG"
       # Enable dashboard
       - "--api.dashboard=true"
 
