@@ -1,7 +1,18 @@
 version: "3.8"
 
 services:
+  traefik-init-acme:
+    image: busybox:latest
+    container_name: traefik-init-acme
+    volumes:
+      - "./letsencrypt:/letsencrypt"
+    command: ["sh", "-c", "touch /letsencrypt/acme.json && chmod 600 /letsencrypt/acme.json"]
+    restart: "no"
+
   traefik:
+    depends_on:
+      traefik-init-acme:
+        condition: service_completed_successfully
     image: traefik:v3.0
     container_name: traefik
     restart: always
