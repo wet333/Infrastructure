@@ -1,4 +1,6 @@
 AGENTS.md
 .env
 
+credentials.txt
+
 letsencrypt/
