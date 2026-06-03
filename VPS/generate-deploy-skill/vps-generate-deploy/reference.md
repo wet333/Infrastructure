@@ -68,4 +68,4 @@ networks:
 - **No certificate**: DNS not pointing to VPS, or wrong hostname in `Host()`.
 - **Route not found**: Missing `traefik.enable`, wrong FQDN, or router name collision.
 
-Further reading in this repo: [Adding-services.md](../../traefik-proxy/Adding-services.md), [Traefik-proxy.md](../../traefik-proxy/Traefik-proxy.md).
+Further reading in this repo: [Deploying-new-services.md](../../traefik-proxy/Deploying-new-services.md), [How-the-proxy-works.md](../../traefik-proxy/How-the-proxy-works.md).
