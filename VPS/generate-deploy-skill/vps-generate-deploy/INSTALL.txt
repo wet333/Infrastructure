@@ -1,0 +1,16 @@
+Install vps-generate-deploy (Cursor / Claude Code)
+
+1. Unzip so this folder exists:
+   ~/.cursor/skills/vps-generate-deploy/SKILL.md
+   ~/.claude/skills/vps-generate-deploy/SKILL.md
+
+   Example:
+   unzip vps-generate-deploy.zip -d ~/.cursor/skills/
+   unzip vps-generate-deploy.zip -d ~/.claude/skills/
+
+2. Restart the editor or start a new agent session.
+
+3. Invoke: @vps-generate-deploy
+
+Full install guide (repo, symlink, rebuild zip):
+Infrastructure/VPS/generate-deploy-skill/INSTALL.md

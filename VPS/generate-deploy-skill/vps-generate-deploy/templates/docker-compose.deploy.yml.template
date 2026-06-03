@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  {{SERVICE_NAME}}:
+    image: {{IMAGE}}
+    container_name: {{PROJECT_SLUG}}-{{SERVICE_NAME}}
+    restart: always
+    env_file:
+      - .env
+    networks:
+      - {{PROJECT_SLUG}}-internal
+      - traefik-net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.{{ROUTER_NAME}}.rule=Host(`${{{HOST_VAR}}}`)"
+      - "traefik.http.routers.{{ROUTER_NAME}}.entrypoints=websecure"
+      - "traefik.http.routers.{{ROUTER_NAME}}.tls.certresolver=le-resolver"
+      - "traefik.http.services.{{ROUTER_NAME}}.loadbalancer.server.port={{INTERNAL_PORT}}"
+
+networks:
+  {{PROJECT_SLUG}}-internal:
+  traefik-net:
+    external: true

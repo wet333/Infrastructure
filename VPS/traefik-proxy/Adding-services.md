@@ -196,3 +196,22 @@ labels:
 - **Route not found** – Confirm `traefik.enable=true` and the router `rule` (e.g. `Host(\`...\`)`) matches the URL you use. Router/service names must be unique across all containers Traefik sees.
 
 For more detail on Traefik’s configuration and entrypoints, see [Traefik-proxy.md](./Traefik-proxy.md).
+
+---
+
+## Deploy file convention
+
+For production on the shared VPS, use a standalone **`docker-compose.deploy.yml`** in each application project (not mixed with local dev overrides). Typical layout:
+
+- Internal network for databases and workers
+- `traefik-net` as external network
+- Traefik labels with `Host(\`<subdomain.fqdn>\`)` per public service (subdomains must already exist in DNS)
+- No host `ports:` on app services
+
+The **`vps-generate-deploy`** agent skill automates discovery, planning, and generation of these files:
+
+- Skill source: [`../generate-deploy-skill/vps-generate-deploy/`](../generate-deploy-skill/vps-generate-deploy/)
+- Install (zip or symlink): [`../generate-deploy-skill/INSTALL.md`](../generate-deploy-skill/INSTALL.md)
+- Portable zip: [`../generate-deploy-skill/dist/vps-generate-deploy.zip`](../generate-deploy-skill/dist/vps-generate-deploy.zip)
+
+Invoke in Cursor or Claude Code: `@vps-generate-deploy`
